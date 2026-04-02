@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>E-Bikes Blog</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>E-BIKES</h1>
+        <a href="/create" class="btn">+ Thêm bài</a>
+    </header>
+
+    <div class="grid">
+        <% posts.forEach(post => { %>
+            <div class="card">
+                <h3><%= post.title %></h3>
+                <p><%= post.content %></p>
+                <img src="<%= post.image %>" alt="<%= post.title %>" class="bike-img">
+<p>🕒 <%= post.createdAt %></p>
+                <div class="actions">
+                    <a href="/detail/<%= post.id %>">Chi tiết</a>
+                    <a href="/edit/<%= post.id %>">Sửa</a>
+                    <a href="/delete/<%= post.id %>" onclick="return confirm('Bạn chắc chắn muốn xóa?')">
+    Xóa
+</a>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+</body>
+</html>
