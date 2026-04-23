@@ -1,0 +1,38 @@
+<%- include('layouts/header') %>
+<%- include('layouts/navbar') %>
+
+<h1 class="mb-4"><%= title %></h1>
+
+<div class="row">
+<% items.forEach(item => { %>
+
+<div class="col-md-4 mb-4">
+<div class="card shadow">
+
+<img src="<%= item.image %>" class="card-img-top">
+
+<div class="card-body">
+
+<h5><%= item.name %></h5>
+<p><%= item.description %></p>
+
+<p class="text-warning fw-bold">
+<%= item.price %> VNĐ/ngày
+</p>
+
+<% if(item.hot){ %>
+<span class="badge bg-warning text-dark">HOT</span>
+<% } %>
+
+<br><br>
+
+<a href="/detail/<%= item.id %>" class="btn btn-dark">Xem chi tiết</a>
+
+</div>
+</div>
+</div>
+
+<% }) %>
+</div>
+
+<%- include('layouts/footer') %>

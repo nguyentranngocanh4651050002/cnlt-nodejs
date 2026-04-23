@@ -1,0 +1,30 @@
+<%- include('layouts/header') %>
+<%- include('layouts/navbar') %>
+
+<div class="card shadow">
+
+<img src="<%= item.image %>" height="300">
+
+<div class="card-body">
+
+<h2><%= item.name %></h2>
+
+<p><%= item.description %></p>
+
+<p class="text-warning fw-bold">
+Giá: <%= item.price %> VNĐ/ngày
+</p>
+
+<% if(item.hot){ %>
+<span class="badge bg-warning text-dark">HOT</span>
+<% } %>
+
+<br><br>
+
+<button class="btn btn-warning">Thuê ngay</button>
+<a href="/list" class="btn btn-secondary">Quay lại</a>
+
+</div>
+</div>
+
+<%- include('layouts/footer') %>
