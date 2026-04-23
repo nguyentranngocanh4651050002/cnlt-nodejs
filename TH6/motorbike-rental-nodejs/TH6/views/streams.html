@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Streams</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div>🌊 Stream System</div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/admin">Admin</a>
+        <a href="/events">Events</a>
+    </div>
+</div>
+
+<div class="container center">
+
+    <h2>📡 Stream Demo</h2>
+
+    <div class="grid">
+
+        <!-- READABLE -->
+        <div class="card">
+            <h3>📖 Readable</h3>
+            <p>Đọc file bikes.txt</p>
+            <button onclick="loadReadable()">Chạy</button>
+            <pre id="read-output" class="output"></pre>
+        </div>
+
+        <!-- WRITABLE -->
+        <div class="card">
+            <h3>✍️ Writable</h3>
+            <input type="text" id="write-input" placeholder="Nhập dữ liệu">
+            <button onclick="writeData()">Ghi</button>
+            <pre id="write-output" class="output"></pre>
+        </div>
+
+        <!-- TRANSFORM -->
+        <div class="card">
+            <h3>🔄 Transform</h3>
+            <p>Chuyển chữ thành HOA</p>
+            <button onclick="runTransform()">Chạy</button>
+            <pre id="transform-output" class="output"></pre>
+        </div>
+
+        <!-- DUPLEX -->
+        <div class="card">
+            <h3>🔁 Duplex</h3>
+            <input type="text" id="duplex-input" placeholder="Nhập để echo">
+            <button onclick="runDuplex()">Gửi</button>
+            <pre id="duplex-output" class="output"></pre>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function loadReadable() {
+    fetch('/read-file')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('read-output').innerText = data;
+    });
+}
+
+function writeData() {
+    let text = document.getElementById('write-input').value;
+
+    fetch('/write-file', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ text: text })
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('write-output').innerText = "Đã ghi: " + text;
+    });
+}
+
+function runTransform() {
+    fetch('/transform')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('transform-output').innerText = data;
+    });
+}
+
+function runDuplex() {
+    let text = document.getElementById('duplex-input').value;
+
+    fetch('/duplex', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ text: text })
+    })
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('duplex-output').innerText = data;
+    });
+}
+</script>
+
+</body>
+</html>

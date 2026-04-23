@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Motorbike Rental</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div>🏍️ Motorbike Rental</div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/admin">Admin</a>
+        <a href="/streams">Streams</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Danh sách xe</h2>
+    <div id="bike-list"></div>
+</div>
+
+<script>
+function loadBikes() {
+    fetch('/json')
+    .then(res => res.json())
+    .then(data => {
+        let html = '';
+
+        data.bikes.forEach(b => {
+            let cls = b.status === "Available" ? "available" : "renting";
+
+            html += `
+    <div class="bike ${cls}">
+        <img src="/images/${b.id}.jpg">
+        <h3>${b.name}</h3>
+        <p><b>ID:</b> ${b.id}</p>
+        <p><b>Trạng thái:</b> ${b.status}</p>
+        ${b.status === "Available"
+            ? `<button class="rent-btn" onclick="rent(${b.id})">Thuê</button>`
+            : `<button class="return-btn" onclick="returnBike(${b.id})">Trả</button>`}
+    </div>
+`;
+        });
+
+        document.getElementById('bike-list').innerHTML = html;
+    });
+}
+
+function rent(id) {
+    fetch('/rent?id=' + id).then(() => loadBikes());
+}
+
+function returnBike(id) {
+    fetch('/return?id=' + id).then(() => loadBikes());
+}
+
+loadBikes();
+</script>
+
+</body>
+</html>

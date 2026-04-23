@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Sửa xe</title>
+
+<style>
+body {
+    background: #1c1c1c;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+}
+
+form {
+    background: #2a2a2a;
+    padding: 20px;
+    display: inline-block;
+    margin-top: 50px;
+    border-radius: 10px;
+}
+
+input, textarea {
+    width: 250px;
+    margin: 10px;
+    padding: 8px;
+}
+
+button {
+    background: orange;
+    border: none;
+    padding: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<h1>✏️ Sửa thông tin xe</h1>
+
+<form action="/blogposts/update/<%= post._id %>" method="POST">
+    <input type="text" name="title" value="<%= post.title %>"><br>
+    <textarea name="body"><%= post.body %></textarea><br>
+    <button>Cập nhật</button>
+</form>
+
+<br>
+<a href="/">Quay lại</a>
+
+</body>
+</html>

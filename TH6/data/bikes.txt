@@ -1,0 +1,4 @@
+1, Honda Vision, 120000, Available
+2, Air Blade, 150000, Available
+3, Winner X, 180000, Renting
+

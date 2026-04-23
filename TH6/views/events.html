@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Event System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div>⚡ Event System</div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/admin">Admin</a>
+        <a href="/streams">Streams</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h2>🎯 Event Demo</h2>
+
+    <div class="card">
+        <p>Click để trigger EventEmitter:</p>
+
+        <button class="rent-btn" onclick="triggerEvent()">Trigger Event</button>
+        <button class="return-btn" onclick="clearLog()">Xóa log</button>
+    </div>
+
+    <h3>📜 Log sự kiện</h3>
+
+    <div id="log-box" class="log-box">
+        Đang tải log...
+    </div>
+
+</div>
+
+<script>
+function triggerEvent() {
+    fetch('/event')
+    .then(() => loadLog());
+}
+
+function loadLog() {
+    fetch('/download-log')
+    .then(res => res.text())
+    .then(data => {
+        document.getElementById('log-box').innerText = data;
+    });
+}
+
+function clearLog() {
+    fetch('/clear-log')
+    .then(() => loadLog());
+}
+
+loadLog();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <div>⚙️ Admin Dashboard</div>
+    <div>
+        <a href="/">Home</a>
+        <a href="/events">Events</a>
+        <a href="/streams">Streams</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <h2>📊 Tổng quan hệ thống</h2>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h3 id="total">0</h3>
+            <p>Tổng xe</p>
+        </div>
+        <div class="stat-box green">
+            <h3 id="available">0</h3>
+            <p>Có sẵn</p>
+        </div>
+        <div class="stat-box red">
+            <h3 id="renting">0</h3>
+            <p>Đang thuê</p>
+        </div>
+    </div>
+
+    <h2>🚗 Danh sách xe</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên xe</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+
+</div>
+
+<script>
+function loadAdmin() {
+    fetch('/json')
+    .then(res => res.json())
+    .then(data => {
+
+        let total = data.bikes.length;
+        let available = data.bikes.filter(b => b.status === "Available").length;
+        let renting = data.bikes.filter(b => b.status === "Renting").length;
+
+        document.getElementById('total').innerText = total;
+        document.getElementById('available').innerText = available;
+        document.getElementById('renting').innerText = renting;
+
+        let html = '';
+
+        data.bikes.forEach(b => {
+            html += `
+                <tr>
+                    <td>${b.id}</td>
+                    <td>${b.name}</td>
+                    <td class="${b.status === 'Available' ? 'text-green' : 'text-red'}">
+                        ${b.status}
+                    </td>
+                    <td>
+                        ${b.status === "Available"
+                            ? `<button class="rent-btn" onclick="rent(${b.id})">Thuê</button>`
+                            : `<button class="return-btn" onclick="returnBike(${b.id})">Trả</button>`}
+                    </td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('table-body').innerHTML = html;
+    });
+}
+
+function rent(id) {
+    fetch('/rent?id=' + id).then(loadAdmin);
+}
+
+function returnBike(id) {
+    fetch('/return?id=' + id).then(loadAdmin);
+}
+
+loadAdmin();
+</script>
+
+</body>
+</html>
