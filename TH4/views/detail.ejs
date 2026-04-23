@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chi tiết xe</title>
+
+<style>
+body {
+    background: #1c1c1c;
+    color: white;
+    font-family: Arial;
+    padding: 20px;
+}
+
+.box {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+button {
+    background: #ffa500;
+    padding: 10px;
+    border: none;
+}
+</style>
+
+</head>
+<body>
+
+<div class="box">
+    <h1><%= post.title %></h1>
+    <p><%= post.body %></p>
+
+    <a href="/">
+        <button>Quay lại</button>
+    </a>
+</div>
+
+</body>
+</html>

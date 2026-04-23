@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>E-Bikes Rental</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #1c1c1c;
+    color: #fff;
+}
+
+/* HEADER */
+header {
+    background: #111;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #ffa500;
+}
+
+/* LOGO */
+header h1 {
+    color: #ffa500;
+    letter-spacing: 2px;
+}
+
+/* MENU */
+.nav a {
+    text-decoration: none;
+    color: white;
+    margin-left: 15px;
+    padding: 8px 15px;
+    border: 2px solid #ffa500;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+/* HOVER */
+.nav a:hover {
+    background: #ffa500;
+    color: black;
+}
+
+/* ACTIVE */
+.nav a.active {
+    background: #ffa500;
+    color: black;
+}
+
+/* CARD giữ nguyên */
+.card {
+    background: #2a2a2a;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.btn {
+    padding: 5px 10px;
+    background: #ffa500;
+    color: black;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+
+/* CONTAINER */
+.container {
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: #2a2a2a;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+/* BUTTON */
+.btn {
+    padding: 5px 10px;
+    background: #ffa500;
+    color: black;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+</style>
+
+</head>
+<body>
+
+<header>
+    <h1>E-BIKES </h1>
+    <div class="nav">
+        <a href="/" class="active">Trang chủ</a>
+        <a href="/blogposts/new">Thêm bài</a>
+    </div>
+</header>
+
+<div class="container">
+
+<h2>Danh sách bài viết</h2>
+
+<% posts.forEach(post => { %>
+<div class="card">
+    <h3><%= post.title %></h3>
+    <p><%= post.body %></p>
+
+    <a class="btn" href="/blogposts/<%= post._id %>">Chi tiết</a>
+    <a class="btn" href="/blogposts/edit/<%= post._id %>">Sửa</a>
+    
+<a class="btn" href="/blogposts/delete/<%= post._id %>">Xóa</a>
+</div>
+<% }) %>
+
+</div>
+
+</body>
+</html>
