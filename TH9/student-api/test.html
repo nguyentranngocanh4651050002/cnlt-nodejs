@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Student API Full UI</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: linear-gradient(135deg, orange, gold);
+    margin: 0;
+}
+.container {
+    width: 90%;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+h2 { color: orange; }
+input, select {
+    padding: 6px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+button {
+    background: orange;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover { background: darkorange; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+th {
+    background: orange;
+    color: white;
+}
+pre {
+    background: #222;
+    color: #0f0;
+    padding: 10px;
+}
+#status {
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🔐 Login / Logout</h2>
+<button onclick="login()">Login</button>
+<button onclick="logout()">Logout</button>
+<h3 id="status"></h3>
+
+<h2>➕ Thêm / Sửa sinh viên</h2>
+<input id="id" placeholder="ID (để sửa)">
+<input id="name" placeholder="Tên">
+<input id="email" placeholder="Email">
+<input id="age" placeholder="Tuổi">
+<input id="class" placeholder="Lớp">
+
+<br>
+<button onclick="createStudent()">Tạo</button>
+<button onclick="updateStudent()">Cập nhật</button>
+
+<h2>🔍 Tìm kiếm</h2>
+<input id="searchName" placeholder="Tên">
+<input id="searchClass" placeholder="Lớp">
+
+<select id="sort">
+    <option value="">Không sort</option>
+    <option value="age_desc">Tuổi giảm dần</option>
+</select>
+
+<button onclick="search()">Tìm</button>
+
+<h2>📋 Danh sách</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Email</th>
+<th>Age</th>
+<th>Class</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+
+<div>
+<button onclick="prevPage()">⬅</button>
+<span id="pageInfo"></span>
+<button onclick="nextPage()">➡</button>
+</div>
+
+<h2>📊 Thống kê</h2>
+<button onclick="stats()">Tổng</button>
+<button onclick="statsClass()">Theo lớp</button>
+
+<h2>Kết quả</h2>
+<pre id="result"></pre>
+
+<h2>⚡ Test Sync vs Async</h2>
+<button onclick="testSync()">Test Sync</button>
+<button onclick="testAsync()">Test Async</button>
+
+<h3>⏱ Thời gian xử lý:</h3>
+<pre id="time"></pre>
+
+</div>
+
+<script>
+const API = "http://localhost:3000";
+let page = 1;
+let limit = 5;
+let total = 0;
+
+// LOGIN
+async function login() {
+    const res = await fetch(API + "/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: "include",
+        body: JSON.stringify({
+            username: "admin",
+            password: "123456"
+        })
+    });
+    show(res);
+    load();
+}
+
+// LOGOUT
+async function logout() {
+    const res = await fetch(API + "/logout", {
+        method: "POST",
+        credentials: "include"
+    });
+    show(res);
+}
+
+// CREATE
+async function createStudent() {
+    const res = await fetch(API + "/students", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        credentials: "include",
+        body: JSON.stringify({
+            name: val("name"),
+            email: val("email"),
+            age: parseInt(val("age")),
+            class: val("class")
+        })
+    });
+    show(res);
+    clearForm();
+    load();
+}
+
+// UPDATE
+async function updateStudent() {
+    const id = val("id");
+    const res = await fetch(API + "/students/" + id, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        credentials: "include",
+        body: JSON.stringify({
+            name: val("name"),
+            email: val("email"),
+            age: parseInt(val("age")),
+            class: val("class")
+        })
+    });
+    show(res);
+    clearForm();
+    load();
+}
+
+// DELETE
+async function deleteStudent(id) {
+    const res = await fetch(API + "/students/" + id, {
+        method: "DELETE",
+        credentials: "include"
+    });
+    show(res);
+    load();
+}
+
+// LOAD
+async function load() {
+    let url = `${API}/students?page=${page}&limit=${limit}`;
+
+    if (val("searchName")) url += `&name=${val("searchName")}`;
+    if (val("searchClass")) url += `&class=${val("searchClass")}`;
+    if (val("sort")) url += `&sort=${val("sort")}`;
+
+    const res = await fetch(url, { credentials: "include" });
+    if (!res.ok) return;
+
+    const data = await res.json();
+    total = data.total;
+
+    document.getElementById("pageInfo").innerText =
+        `Page ${data.page} | Total ${data.total}`;
+
+    let html = "";
+    data.data.forEach(s => {
+        html += `
+        <tr>
+            <td>${s.id}</td>
+            <td>${s.name}</td>
+            <td>${s.email}</td>
+            <td>${s.age}</td>
+            <td>${s.class}</td>
+            <td>
+                <button onclick='fill(${JSON.stringify(s.id)}, ${JSON.stringify(s.name)}, ${JSON.stringify(s.email)}, ${JSON.stringify(s.age)}, ${JSON.stringify(s.class)})'>Sửa</button>
+                <button onclick="deleteStudent(${s.id})">Xóa</button>
+            </td>
+        </tr>`;
+    });
+
+    document.getElementById("table").innerHTML = html;
+}
+
+// SEARCH
+function search() {
+    page = 1;
+    load();
+}
+
+// PAGINATION
+function nextPage() {
+    if (page * limit < total) {
+        page++;
+        load();
+    }
+}
+function prevPage() {
+    if (page > 1) {
+        page--;
+        load();
+    }
+}
+
+// STATS
+async function stats() {
+    const res = await fetch(API + "/students/stats", {
+        credentials: "include"
+    });
+    show(res);
+}
+async function statsClass() {
+    const res = await fetch(API + "/students/stats/class", {
+        credentials: "include"
+    });
+    show(res);
+}
+
+// FILL
+function fill(id, name, email, age, cls) {
+    document.getElementById("id").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("email").value = email;
+    document.getElementById("age").value = age;
+    document.getElementById("class").value = cls;
+}
+
+// CLEAR
+function clearForm() {
+    ["id","name","email","age","class"].forEach(i =>
+        document.getElementById(i).value = ""
+    );
+}
+
+// HELPER
+function val(id) {
+    return document.getElementById(id).value;
+}
+
+// SHOW
+async function show(res) {
+    const data = await res.json();
+
+    document.getElementById("status").innerText =
+        res.ok ? "✔ Thành công" : "❌ Lỗi";
+
+    if (!res.ok) alert(data.message);
+
+    document.getElementById("result").innerText =
+        JSON.stringify(data, null, 2);
+}
+
+// SYNC
+async function testSync() {
+    let log = "SYNC (tuần tự)\n";
+    const totalStart = Date.now();
+
+    for (let i = 1; i <= 3; i++) {
+        const start = Date.now();
+
+        await fetch(API + "/heavy-sync", {
+            credentials: "include"
+        });
+
+        const end = Date.now();
+        log += `Request ${i}: ${end - start} ms\n`;
+    }
+
+    const totalEnd = Date.now();
+    log += `Tổng: ${totalEnd - totalStart} ms`;
+
+    document.getElementById("time").innerText = log;
+}
+
+// ASYNC
+async function testAsync() {
+    let log = "ASYNC (song song)\n";
+    const totalStart = Date.now();
+
+    const requests = [1,2,3].map(async (i) => {
+        const start = Date.now();
+
+        await fetch(API + "/heavy-async", {
+            credentials: "include"
+        });
+
+        const end = Date.now();
+        return `Request ${i}: ${end - start} ms`;
+    });
+
+    const results = await Promise.all(requests);
+    results.forEach(r => log += r + "\n");
+
+    const totalEnd = Date.now();
+    log += `Tổng: ${totalEnd - totalStart} ms`;
+
+    document.getElementById("time").innerText = log;
+}
+</script>
+
+</body>
+</html>
