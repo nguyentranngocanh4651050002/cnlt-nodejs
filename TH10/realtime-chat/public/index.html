@@ -2,36 +2,90 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Cộng đồng thuê Xe Máy 24/7 - Chat Support</title>
+    <title>Zalo Gold</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
-    <div id="login-screen">
-        <div class="login-card">
-            <h1 style="color: #ff9800;">🏍️MOTO GO </h1>
-            <input type="text" id="username" placeholder="Nhập tên của bạn...">
-            <button onclick="joinSystem()">Vào Hệ Thống</button>
-        </div>
+    <div id="login-container">
+        <i class="fa-solid fa-comments fa-4x" style="color: #FF8C00; margin-bottom: 15px;"></i>
+        <h2>CHAT FUNNY</h2>
+        <input type="text" id="username" placeholder="Nhập tên của bạn...">
+        <button onclick="joinChat()">ĐĂNG NHẬP</button>
     </div>
 
-    <div id="main-app" style="display: none;">
+    <div id="chat-container" class="hidden">
         <div class="sidebar">
-            <div class="sidebar-header">ĐANG ONLINE</div>
+            <div class="my-profile"><i class="fas fa-user-circle fa-2x"></i> <span id="my-name"></span></div>
+            <div class="sidebar-title">BẠN BÈ TRỰC TUYẾN</div>
             <ul id="user-list"></ul>
         </div>
-        <div class="chat-container">
+        <div class="chat-main">
             <div class="chat-header">
-                <span id="chat-with">Chọn một người để bắt đầu chat</span>
+                <span id="target-name">Chọn một người để bắt đầu</span>
+                <div class="header-actions">
+                    <button class="icon-btn" onclick="addNewUser()" title="Thêm bạn">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                    <button class="icon-btn leave-btn" onclick="leaveChat()" title="Rời đoạn chat">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
             </div>
-            <div id="messages"></div>
-            <div class="input-area">
-                <input type="text" id="msg-input" placeholder="Nhập tin nhắn tư vấn xe...">
-                <button onclick="sendMessage()">GỬI</button>
+
+            <div id="messages-box"></div>
+            
+            <div id="typing-status"></div>
+            
+            <div class="chat-footer">
+                <label for="file-input" class="icon-btn"><i class="fa-solid fa-paperclip"></i></label>
+                <input type="file" id="file-input" class="hidden" onchange="sendFile(this)">
+                
+                <button class="icon-btn" onclick="sendLocation()"><i class="fa-solid fa-location-dot"></i></button>
+                
+                <div style="position: relative;">
+                    <button class="icon-btn" onclick="toggleEmoji()"><i class="fa-regular fa-smile"></i></button>
+                    <div id="custom-emoji-picker" class="hidden">
+                        <span onclick="addEmoji('😀')">😀</span>
+                        <span onclick="addEmoji('😂')">😂</span>
+                        <span onclick="addEmoji('🤣')">🤣</span>
+                        <span onclick="addEmoji('😊')">😊</span>
+                        <span onclick="addEmoji('😍')">😍</span>
+                        <span onclick="addEmoji('😎')">😎</span>
+                        <span onclick="addEmoji('😜')">😜</span>
+                        <span onclick="addEmoji('🤔')">🤔</span>
+                        
+                        <span onclick="addEmoji('😭')">😭</span>
+                        <span onclick="addEmoji('😱')">😱</span>
+                        <span onclick="addEmoji('😡')">😡</span>
+                        <span onclick="addEmoji('🥳')">🥳</span>
+                        <span onclick="addEmoji('😴')">😴</span>
+                        <span onclick="addEmoji('😳')">😳</span>
+                        
+                        <span onclick="addEmoji('👍')">👍</span>
+                        <span onclick="addEmoji('👎')">👎</span>
+                        <span onclick="addEmoji('❤️')">❤️</span>
+                        <span onclick="addEmoji('💔')">💔</span>
+                        <span onclick="addEmoji('🔥')">🔥</span>
+                        <span onclick="addEmoji('🙏')">🙏</span>
+                        <span onclick="addEmoji('👏')">👏</span>
+                        
+                        <span onclick="addEmoji('🎉')">🎉</span>
+                        <span onclick="addEmoji('✨')">✨</span>
+                        <span onclick="addEmoji('🚀')">🚀</span>
+                        <span onclick="addEmoji('💯')">💯</span>
+                        <span onclick="addEmoji('✅')">✅</span>
+                        <span onclick="addEmoji('❌')">❌</span>
+                        <span onclick="addEmoji('☀️')">☀️</span>
+                    </div>
+                </div>
+
+                <input type="text" id="msg-input" placeholder="Nhập tin nhắn..." oninput="handleTyping()">
+                <button id="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
-
-    <script src="/socket.io/socket.io.js"></script>
     <script src="client.js"></script>
 </body>
 </html>

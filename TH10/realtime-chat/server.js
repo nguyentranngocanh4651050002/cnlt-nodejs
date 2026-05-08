@@ -4,50 +4,43 @@ const { Server } = require('socket.io');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, { 
+    maxHttpBufferSize: 1e7 // Cho phép gửi file (ảnh) lên đến 10MB
+});
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
-let users = {}; 
+const users = new Map();
 
 io.on('connection', (socket) => {
-    // 1. Khi người dùng tham gia
-    socket.on('join', (username) => {
-        users[socket.id] = username;
-        io.emit('updateUserList', Object.values(users));
+    // Đăng nhập
+    socket.on('join', (name) => {
+        users.set(socket.id, { id: socket.id, name: name });
+        io.emit('updateUserList', Array.from(users.values()));
     });
 
-    // 2. Xử lý gửi tin nhắn riêng + Kèm thời gian
+    // Gửi tin nhắn (Văn bản, Ảnh, Vị trí)
     socket.on('privateMessage', (data) => {
-        const targetId = Object.keys(users).find(id => users[id] === data.to);
-        if (targetId) {
-            io.to(targetId).emit('receiveMessage', {
-                sender: users[socket.id],
-                message: data.message,
-                time: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-            });
-        }
+        socket.to(data.toId).emit('receiveMessage', {
+            ...data,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
     });
 
-    // 3. Xử lý khi đang soạn tin
+    // Thu hồi tin nhắn
+    socket.on('deleteMessage', (data) => {
+        socket.to(data.toId).emit('removeMessageFromUI', { msgId: data.msgId });
+    });
+
+    // Trạng thái đang soạn tin
     socket.on('typing', (data) => {
-        const targetId = Object.keys(users).find(id => users[id] === data.to);
-        if (targetId) {
-            socket.to(targetId).emit('isTyping', { from: users[socket.id] });
-        }
+        socket.to(data.toId).emit('displayTyping', { isTyping: data.isTyping });
     });
 
-    // 4. Khi người dùng thoát
     socket.on('disconnect', () => {
-        delete users[socket.id];
-        io.emit('updateUserList', Object.values(users));
+        users.delete(socket.id);
+        io.emit('updateUserList', Array.from(users.values()));
     });
-}); // <--- DẤU ĐÓNG NÀY RẤT QUAN TRỌNG
-
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log('====================================');
-    console.log('   MOTO GO SYSTEM IS READY!        ');
-    console.log(`   Link: http://localhost:${PORT}   `);
-    console.log('====================================');
 });
+
+server.listen(3000, () => console.log('Zalo Gold đang chạy tại http://localhost:3000'));
