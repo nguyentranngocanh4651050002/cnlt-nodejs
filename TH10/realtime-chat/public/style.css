@@ -1,0 +1,60 @@
+:root {
+    --bg-dark: #121212;
+    --card-dark: #1e1e1e;
+    --accent-orange: #ff9800;
+    --accent-yellow: #ffc107;
+    --text-light: #e0e0e0;
+}
+
+body {
+    margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif;
+    background-color: var(--bg-dark); color: var(--text-light);
+}
+
+/* Login Screen */
+#login-screen {
+    height: 100vh; display: flex; justify-content: center; align-items: center;
+}
+.login-card {
+    background: var(--card-dark); padding: 40px; border-radius: 10px;
+    text-align: center; border: 2px solid var(--accent-orange);
+}
+input {
+    padding: 12px; border-radius: 5px; border: 1px solid #444;
+    background: #2c2c2c; color: white; width: 250px; outline: none;
+}
+button {
+    padding: 12px 25px; background: var(--accent-orange);
+    border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
+}
+
+/* Main App Layout */
+#main-app { display: flex; height: 100vh; }
+.sidebar {
+    width: 280px; background: #000; border-right: 1px solid #333;
+}
+.sidebar-header {
+    padding: 20px; font-weight: bold; color: var(--accent-yellow); border-bottom: 1px solid #333;
+}
+#user-list { list-style: none; padding: 0; margin: 0; }
+#user-list li {
+    padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #222;
+}
+#user-list li:hover { background: #333; border-left: 4px solid var(--accent-orange); }
+
+.chat-container { flex: 1; display: flex; flex-direction: column; }
+.chat-header { padding: 15px 20px; background: var(--card-dark); border-bottom: 1px solid #333; }
+#messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; }
+
+/* Message Bubble */
+.msg { margin-bottom: 15px; padding: 10px 15px; border-radius: 10px; max-width: 70%; }
+.msg-sent { align-self: flex-end; background: var(--accent-orange); color: black; }
+.msg-received { align-self: flex-start; background: #333; border: 1px solid var(--accent-yellow); }
+
+.input-area { padding: 20px; background: #1a1a1a; display: flex; gap: 10px; }
+.input-area input { flex: 1; }
+
+.msg { display: flex; flex-direction: column; margin-bottom: 10px; }
+.msg-time { font-size: 0.7rem; opacity: 0.6; margin-top: 4px; }
+.msg-sent .msg-time { align-self: flex-end; color: #000; }
+.msg-received .msg-time { align-self: flex-start; color: #ccc; }
