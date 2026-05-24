@@ -1,19 +1,19 @@
 // ===============================
-// src/routes/user.routes.js
+// src/routes/donThueRoutes.js
 // ===============================
 
 const express = require("express");
 
 const router = express.Router();
 
-const User = require("../models/NguoiDung");
+const DonThue = require("../models/DonThue");
 
 // CREATE
 router.post("/", async (req, res) => {
     try {
-        const user = await User.create(req.body);
+        const donThue = await DonThue.create(req.body);
 
-        res.status(201).json(user);
+        res.status(201).json(donThue);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -24,9 +24,9 @@ router.post("/", async (req, res) => {
 // READ
 router.get("/", async (req, res) => {
     try {
-        const users = await User.find();
+        const danhSachDon = await DonThue.find();
 
-        res.json(users);
+        res.json(danhSachDon);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -37,13 +37,13 @@ router.get("/", async (req, res) => {
 // UPDATE
 router.put("/:id", async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(
+        const donThue = await DonThue.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true }
         );
 
-        res.json(user);
+        res.json(donThue);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -54,10 +54,10 @@ router.put("/:id", async (req, res) => {
 // DELETE
 router.delete("/:id", async (req, res) => {
     try {
-        await User.findByIdAndDelete(req.params.id);
+        await DonThue.findByIdAndDelete(req.params.id);
 
         res.json({
-            message: "Xóa người dùng thành công"
+            message: "Xóa đơn thuê thành công"
         });
     } catch (error) {
         res.status(500).json({

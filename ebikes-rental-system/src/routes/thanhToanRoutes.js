@@ -1,19 +1,19 @@
 // ===============================
-// src/routes/user.routes.js
+// src/routes/thanhToanRoutes.js
 // ===============================
 
 const express = require("express");
 
 const router = express.Router();
 
-const User = require("../models/NguoiDung");
+const ThanhToan = require("../models/ThanhToan");
 
 // CREATE
 router.post("/", async (req, res) => {
     try {
-        const user = await User.create(req.body);
+        const thanhToan = await ThanhToan.create(req.body);
 
-        res.status(201).json(user);
+        res.status(201).json(thanhToan);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -24,9 +24,9 @@ router.post("/", async (req, res) => {
 // READ
 router.get("/", async (req, res) => {
     try {
-        const users = await User.find();
+        const danhSachThanhToan = await ThanhToan.find();
 
-        res.json(users);
+        res.json(danhSachThanhToan);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -37,13 +37,13 @@ router.get("/", async (req, res) => {
 // UPDATE
 router.put("/:id", async (req, res) => {
     try {
-        const user = await User.findByIdAndUpdate(
+        const thanhToan = await ThanhToan.findByIdAndUpdate(
             req.params.id,
             req.body,
             { new: true }
         );
 
-        res.json(user);
+        res.json(thanhToan);
     } catch (error) {
         res.status(500).json({
             message: error.message
@@ -54,10 +54,10 @@ router.put("/:id", async (req, res) => {
 // DELETE
 router.delete("/:id", async (req, res) => {
     try {
-        await User.findByIdAndDelete(req.params.id);
+        await ThanhToan.findByIdAndDelete(req.params.id);
 
         res.json({
-            message: "Xóa người dùng thành công"
+            message: "Xóa thanh toán thành công"
         });
     } catch (error) {
         res.status(500).json({
