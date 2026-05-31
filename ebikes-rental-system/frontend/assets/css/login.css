@@ -1,0 +1,28 @@
+/* Container bao bọc form */
+.login-box {
+    background-color: rgba(255, 255, 255, 0.03); /* Nền mờ cực nhẹ */
+    border: 1px solid rgba(255, 255, 255, 0.15); /* Khung viền mảnh, tinh tế */
+    padding: 50px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 450px;
+    backdrop-filter: blur(10px); /* Hiệu ứng làm mờ nền phía sau */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Đổ bóng nhẹ tạo chiều sâu */
+}
+
+/* Tùy chỉnh input để trông sang trọng hơn */
+.form-control {
+    background-color: rgba(0, 0, 0, 0.2); /* Nền input tối hơn nền chung */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 15px;
+    margin-top: 10px;
+    transition: var(--transition);
+}
+
+/* Hiệu ứng khi nhấn vào input */
+.form-control:focus {
+    border-color: var(--primary-orange);
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.3);
+}

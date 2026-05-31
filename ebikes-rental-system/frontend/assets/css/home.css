@@ -1,0 +1,80 @@
+/* frontend/assets/css/home.css */
+
+/* Banner giới thiệu chính */
+.hero-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    padding: 90px 20px;
+    text-align: center;
+    border-bottom: 4px solid var(--primary-orange);
+}
+.hero-section h1 {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+}
+.hero-section h1 span {
+    color: var(--primary-orange);
+}
+.hero-section p {
+    font-size: 16px;
+    color: #cbd5e1;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+}
+.btn-cta {
+    display: inline-block;
+    background-color: var(--primary-orange);
+    color: #ffffff;
+    text-decoration: none;
+    padding: 14px 35px;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+}
+.btn-cta:hover {
+    background-color: #d33600;
+    transform: translateY(-2px);
+}
+
+/* Khu vực hiển thị tính năng độc quyền */
+.features-container {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+.feature-box {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 30px;
+    text-align: center;
+    transition: var(--transition);
+}
+.feature-box:hover {
+    border-color: var(--primary-orange);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(15, 23, 42, 0.05);
+}
+.feature-box .icon {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+.feature-box h3 {
+    font-size: 18px;
+    color: var(--text-main);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.feature-box p {
+    font-size: 13.5px;
+    color: var(--text-light);
+}

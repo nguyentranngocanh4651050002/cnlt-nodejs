@@ -1,73 +1,71 @@
-const NguoiDung = require("../models/NguoiDung");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const User = require('../models/userModel');
+// Lưu ý: Nếu bạn chưa cài bcrypt để băm mật khẩu, hãy chạy lệnh: npm i bcrypt
+const bcrypt = require('bcrypt'); 
 
-const login = async (req, res) => {
-  try {
-    const { email, matKhau } = req.body;
+// ĐĂNG KÝ TÀI KHOẢN
+exports.register = async (req, res) => {
+    try {
+        const { ho_ten, email, mat_khau, so_dien_thoai } = req.body;
 
-    // check input
-    if (!email || !matKhau) {
-      return res.status(400).json({
-        success: false,
-        message: "Thiếu email hoặc mật khẩu"
-      });
+        // Kiểm tra xem email đã tồn tại chưa
+        const userTonTai = await User.findOne({ email });
+        if (userTonTai) {
+            return res.status(400).json({ success: false, message: "Email này đã được đăng ký hệ thống!" });
+        }
+
+        // Mã hóa băm bảo mật mật khẩu
+        const muoi = await bcrypt.genSalt(10);
+        const matKhauMaHoa = await bcrypt.hash(mat_khau, muoi);
+
+        // Tạo người dùng mới
+        const userMoi = new User({
+            ho_ten,
+            email,
+            mat_khau: matKhauMaHoa,
+            so_dien_thoai,
+            vai_tro: 'customer' // Mặc định đăng ký từ giao diện là khách hàng
+        });
+
+        await userMoi.save();
+        res.status(201).json({ success: true, message: "Đăng ký tài khoản thành công!" });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
-
-    // tìm user
-    const user = await NguoiDung.findOne({ email });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Email không tồn tại"
-      });
-    }
-
-    // check password
-    const isMatch = await bcrypt.compare(matKhau, user.matKhau);
-
-    if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Sai mật khẩu"
-      });
-    }
-
-    // tạo token
-    const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email
-      },
-      "SECRET_KEY",
-      { expiresIn: "1d" }
-    );
-
-    // debug (optional)
-    console.log("🔥 LOGIN SUCCESS");
-    console.log("TOKEN:", token);
-
-    // trả response
-    return res.json({
-      success: true,
-      message: "Login OK",
-      token: token,
-      user: {
-        id: user._id,
-        hoTen: user.hoTen,
-        email: user.email
-      }
-    });
-
-  } catch (error) {
-    console.log("LOGIN ERROR:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
 };
 
-module.exports = { login };
+// ĐĂNG NHẬP HỆ THỐNG
+exports.login = async (req, res) => {
+    try {
+        const { email, mat_khau } = req.body;
+
+        // Tìm kiếm tài khoản qua email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "Tài khoản không tồn tại trên hệ thống!" });
+        }
+
+        // Kiểm tra trạng thái hoạt động
+        if (!user.trang_thai_hoat_dong) {
+            return res.status(403).json({ success: false, message: "Tài khoản của bạn hiện đang bị khóa!" });
+        }
+
+        // So sánh mật khẩu nhập vào với mật khẩu đã băm trong DB
+        const hopLe = await bcrypt.compare(mat_khau, user.mat_khau);
+        if (!hopLe) {
+            return res.status(400).json({ success: false, message: "Mật khẩu nhập vào không chính xác!" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Đăng nhập thành công!",
+            user: {
+                id: user._id,
+                ho_ten: user.ho_ten,
+                email: user.email,
+                vai_tro: user.vai_tro
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

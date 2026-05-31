@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập - E-BIKES</title>
+    <style>
+        :root {
+            --bg-navy: #0f172a;
+            --primary-orange: #ff4500;
+            --white: #ffffff;
+            --text-muted: #94a3b8;
+        }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg-navy); display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .auth-box { background: var(--white); padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { color: #1e293b; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-submit { width: 100%; padding: 12px; background: var(--primary-orange); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .footer-link { margin-top: 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="auth-box">
+    <h2>CORE_LOGIN</h2>
+    <form id="loginForm">
+        <div class="form-group">
+            <input type="text" id="email" class="form-control" placeholder="Tài khoản / Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="pass" class="form-control" placeholder="Mật mã truy cập" required>
+        </div>
+        
+        <div class="form-group">
+            <label style="color: #64748b; font-size: 12px; margin-bottom: 5px; display: block;">VAI TRÒ TRUY CẬP</label>
+            <select id="roleSelect" class="form-control">
+                <option value="customer">Customer</option>
+                <option value="staff">Staff</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">KẾT NỐI HỆ THỐNG</button>
+    </form>
+
+    <div class="footer-link">
+        <a href="#" onclick="forgotPassword()" style="color: var(--text-muted);">Bị mất mật mã (Forgot)?</a><br><br>
+        <a href="register.html">Chưa có định danh? Tạo tài khoản mới</a>
+    </div>
+</div>
+
+<script>
+    // 1. TỰ ĐỘNG CHUYỂN HƯỚNG NẾU ĐÃ ĐĂNG NHẬP
+    window.onload = function() {
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            const role = localStorage.getItem('userRole');
+            if (role === 'admin' || role === 'staff') {
+                window.location.href = "dashboard.html";
+            } else {
+                window.location.href = "home.html";
+            }
+        }
+    };
+
+    // 2. Xử lý quên mật khẩu
+    function forgotPassword() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert("Vui lòng nhập email vào ô phía trên để khôi phục!");
+        } else {
+            alert("Liên kết đặt lại mật mã đã được gửi tới email: " + email);
+        }
+    }
+
+    // 3. Xử lý đăng nhập
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('pass').value;
+        const selectedRole = document.getElementById('roleSelect').value;
+
+        // Giả lập dữ liệu đã đăng ký (Bạn nhớ thay bằng logic kiểm tra DB hoặc lưu trữ thực tế)
+        const savedEmail = localStorage.getItem('userEmail') || "admin@ebikes.com";
+        const savedPass = localStorage.getItem('userPass') || "123456";
+
+        if (email === savedEmail && pass === savedPass) {
+            localStorage.setItem('userRole', selectedRole);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            if (selectedRole === 'admin' || selectedRole === 'staff') {
+                window.location.href = "dashboard.html";
+            } else {
+                window.location.href = "home.html";
+            }
+        } else {
+            alert("Sai thông tin! Tài khoản mẫu: admin@ebikes.com / Mật khẩu: 123456");
+        }
+    });
+</script>
+</body>
+</html>

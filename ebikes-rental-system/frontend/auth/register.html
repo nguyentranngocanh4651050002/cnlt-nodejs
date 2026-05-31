@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - E-BIKES</title>
+    <style>
+        /* CSS đồng bộ với trang Đăng nhập */
+        :root {
+            --bg-navy: #0f172a;
+            --primary-orange: #ff4500;
+            --white: #ffffff;
+            --text-muted: #94a3b8;
+        }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--bg-navy); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .auth-box { background: var(--white); padding: 40px; border-radius: 12px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h2 { color: #1e293b; margin-bottom: 25px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+        .btn-submit { width: 100%; padding: 12px; background: var(--primary-orange); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .footer-link { margin-top: 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="auth-box">
+    <h2>ĐĂNG KÝ TÀI KHOẢN</h2>
+    <form id="registerForm">
+        <div class="form-group">
+            <input type="text" id="regName" class="form-control" placeholder="Họ và tên" required>
+        </div>
+        <div class="form-group">
+            <input type="email" id="regEmail" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="regPass" class="form-control" placeholder="Mật khẩu" required>
+        </div>
+        <div class="form-group">
+            <label style="color: #64748b; font-size: 12px; margin-bottom: 5px; display: block;">CHỌN VAI TRÒ</label>
+            <select id="regRole" class="form-control">
+                <option value="customer">Customer</option>
+                <option value="staff">Staff</option>
+                <option value="staff">Admin</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-submit">XÁC NHẬN ĐĂNG KÝ</button>
+    </form>
+    <div class="footer-link">
+        <a href="login.html">Đã có tài khoản? Quay lại Đăng nhập</a>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Lưu thông tin vào localStorage để trang Đăng nhập có thể đối chiếu
+        localStorage.setItem('userEmail', document.getElementById('regEmail').value);
+        localStorage.setItem('userPass', document.getElementById('regPass').value);
+        localStorage.setItem('userRole', document.getElementById('regRole').value);
+        
+        alert("Đăng ký thành công! Bạn có thể tiến hành đăng nhập.");
+        window.location.href = "login.html";
+    });
+</script>
+</body>
+</html>

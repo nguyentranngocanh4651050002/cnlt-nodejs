@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>GPS Monitor - Admin</title>
+    <script src="../js/check-auth.js"></script>
+    <link rel="stylesheet" href="../assets/css/style.css"><link rel="stylesheet" href="../assets/css/admin.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="admin-sidebar" id="sidebarMenu"></aside>
+        <main class="admin-content">
+            <header class="content-header">
+                <h1>BẢN ĐỒ ĐỊNH VỊ GPS REALTIME</h1>
+                <p>Theo dõi tọa độ vị trí thực tế của các xe đang di chuyển trên đường</p>
+            </header>
+            <div id="map" style="width: 100%; height: 60vh; border: 2px solid var(--primary-cyan); box-shadow: var(--neon-glow-cyan);"></div>
+        </main>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../js/api.js"></script><script src="../js/sidebar-loader.js"></script><script src="../js/admin-gps.js"></script>
+</body>
+</html>

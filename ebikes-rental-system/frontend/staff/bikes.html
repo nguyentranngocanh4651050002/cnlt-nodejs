@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý kho xe - E-BIKES</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f1f5f9; padding: 20px; }
+        .admin-box { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; }
+        .data-table th, .data-table td { padding: 15px; border-bottom: 1px solid #eee; text-align: left; }
+        .data-table th { background: #f8fafc; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .btn-add { background: #ff4500; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<main class="content">
+    <h1>QUẢN LÝ KHO XE</h1>
+    
+    <div class="admin-box">
+        <input type="text" id="bikeName" placeholder="Tên Xe">
+        <input type="text" id="bikePlate" placeholder="Biển số">
+        <input type="file" id="bikeImage" accept="image/*">
+        <input type="text" id="bikePrice" placeholder="Nhập giá thuê">
+        <button class="btn-add" onclick="addBike()">THÊM XE MỚI</button>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Ảnh</th><th>Tên Xe</th><th>Biển Số</th><th>Trạng Thái</th><th>Hành Động</th></tr>
+        </thead>
+        <tbody id="bikeTableBody"></tbody>
+    </table>
+</main>
+
+<script>
+    // 1. Khởi tạo dữ liệu
+    let bikes = JSON.parse(localStorage.getItem('bikes')) || [];
+
+    // 2. Hàm thêm xe
+    function addBike() {
+        const name = document.getElementById('bikeName').value;
+        const plate = document.getElementById('bikePlate').value;
+        const fileInput = document.getElementById('bikeImage');
+        
+        if (!name || !fileInput.files[0]) {
+            alert("Vui lòng nhập tên và chọn ảnh!");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            bikes.push({ name, plate, image: e.target.result, status: 'Sẵn sàng' });
+            localStorage.setItem('bikes', JSON.stringify(bikes));
+            renderTable();
+            // Reset input
+            document.getElementById('bikeName').value = '';
+            document.getElementById('bikePlate').value = '';
+            fileInput.value = '';
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+
+    // 3. Hàm xóa xe
+    function deleteBike(index) {
+        if (confirm("Xác nhận xóa xe này?")) {
+            bikes.splice(index, 1);
+            localStorage.setItem('bikes', JSON.stringify(bikes));
+            renderTable();
+        }
+    }
+
+    // 4. Hàm hiển thị bảng
+    function renderTable() {
+        const tbody = document.getElementById('bikeTableBody');
+        tbody.innerHTML = bikes.map((bike, index) => `
+            <tr>
+                <td><img src="${bike.image}" width="60" style="border-radius:4px;"></td>
+                <td>${bike.name}</td>
+                <td>${bike.plate}</td>
+                <td><span style="color:green; font-weight:bold;">${bike.status}</span></td>
+                <td><button class="btn-del" onclick="deleteBike(${index})">Xóa</button></td>
+            </tr>
+        `).join('');
+    }
+    // 4. Hàm hiển thị bảng (Có thêm nút Sửa)
+    function renderTable() {
+        const tbody = document.getElementById('bikeTableBody');
+        tbody.innerHTML = bikes.map((bike, index) => `
+            <tr>
+                <td><img src="${bike.image}" width="60" style="border-radius:4px;"></td>
+                <td>${bike.name}</td>
+                <td>${bike.plate}</td>
+                <td><span style="color:green; font-weight:bold;">${bike.status}</span></td>
+                <td>
+                    <button onclick="editBike(${index})" style="background:#3b82f6; color:white; border:none; padding:8px 12px; border-radius:4px; cursor:pointer;">Sửa</button>
+                    <button class="btn-del" onclick="deleteBike(${index})">Xóa</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // 5. Hàm Sửa xe
+    let editingIndex = -1; // Biến đánh dấu đang sửa xe nào
+
+    function editBike(index) {
+        editingIndex = index;
+        const bike = bikes[index];
+        
+        // Điền dữ liệu cũ vào input
+        document.getElementById('bikeName').value = bike.name;
+        document.getElementById('bikePlate').value = bike.plate;
+        
+        // Đổi nút thành "Cập nhật"
+        const btn = document.querySelector('.btn-add');
+        btn.innerText = "CẬP NHẬT XE";
+        btn.onclick = updateBike; // Đổi hành động của nút
+    }
+
+    // 6. Hàm Cập nhật xe
+    function updateBike() {
+        const name = document.getElementById('bikeName').value;
+        const plate = document.getElementById('bikePlate').value;
+        const fileInput = document.getElementById('bikeImage');
+
+        bikes[editingIndex].name = name;
+        bikes[editingIndex].plate = plate;
+
+        // Nếu có chọn ảnh mới thì cập nhật ảnh
+        if (fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                bikes[editingIndex].image = e.target.result;
+                finishUpdate();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        } else {
+            finishUpdate();
+        }
+    }
+
+    function finishUpdate() {
+        localStorage.setItem('bikes', JSON.stringify(bikes));
+        renderTable();
+        // Reset form
+        document.getElementById('bikeName').value = '';
+        document.getElementById('bikePlate').value = '';
+        document.querySelector('.btn-add').innerText = "THÊM XE MỚI";
+        document.querySelector('.btn-add').onclick = addBike;
+        editingIndex = -1;
+    }
+    function addBike() {
+    const name = document.getElementById('bikeName').value;
+    const price = parseFloat(document.getElementById('bikePrice').value); // Chuyển sang kiểu số
+    
+    // Kiểm tra dữ liệu
+    if (!name) {
+        alert("Vui lòng nhập tên xe!");
+        return;
+    }
+    
+    if (isNaN(price) || price < 0) {
+        alert("Giá thuê phải là một số dương!");
+        return;
+    }
+
+    // Nếu mọi thứ ổn, mới tiếp tục thêm xe vào mảng...
+    // ... code thêm xe của bạn ở đây
+}
+function addBike() {
+    const name = document.getElementById('bikeName').value;
+    const plate = document.getElementById('bikePlate').value;
+    const priceInput = document.getElementById('bikePrice').value; // Giả sử bạn có input này
+    const fileInput = document.getElementById('bikeImage');
+    
+    // 1. Chuyển đổi giá trị sang kiểu số
+    const price = parseFloat(priceInput);
+
+    // 2. Kiểm tra nếu nhập số âm
+    if (price < 0) {
+        alert("CẢNH BÁO: Giá thuê không thể là số âm (" + price + "). Vui lòng nhập lại!");
+        document.getElementById('bikePrice').focus(); // Tự động trỏ chuột vào ô nhập giá
+        return; // Dừng hàm, không cho thực hiện thêm xe
+    }
+
+    // 3. Kiểm tra các điều kiện khác (tên, file...)
+    if (!name || !fileInput.files[0] || isNaN(price)) {
+        alert("Vui lòng nhập tên, giá thuê hợp lệ và chọn ảnh!");
+        return;
+    }
+
+    // Nếu vượt qua hết các kiểm tra trên, mới thực hiện đọc file và thêm xe
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        bikes.push({ name, plate, price, image: e.target.result, status: 'Sẵn sàng' });
+        localStorage.setItem('bikes', JSON.stringify(bikes));
+        renderTable();
+        
+        // Reset form
+        document.getElementById('bikeName').value = '';
+        document.getElementById('bikePlate').value = '';
+        document.getElementById('bikePrice').value = '';
+        fileInput.value = '';
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+}
+
+    // Tải dữ liệu khi trang vừa mở
+    renderTable();
+</script>
+</body>
+</html>

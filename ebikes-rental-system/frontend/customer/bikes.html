@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Xe - E-BIKES</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; color: #1e293b; }
+
+        /* NAVBAR */
+        .navbar { background: #0f172a; color: white; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-links a { color: white; text-decoration: none; margin: 0 15px; font-size: 14px; }
+        
+        /* LAYOUT */
+        .container { max-width: 1200px; margin: 30px auto; display: flex; gap: 30px; padding: 0 20px; }
+        
+        /* SIDEBAR */
+        .sidebar { width: 280px; background: white; padding: 20px; border: 1px solid #e1e1e1; border-radius: 12px; height: fit-content; }
+        .filter-title { font-weight: bold; border-bottom: 2px solid #ff4500; padding-bottom: 5px; display: inline-block; margin-bottom: 20px; }
+        .filter-group { margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; }
+        .filter-label { font-size: 13px; font-weight: bold; color: #666; margin-bottom: 10px; display: block; }
+        input[type="text"] { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
+        .checkbox-item { font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; }
+        .btn-apply { width: 100%; background: #ff4500; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        /* GRID & CARDS */
+        .main-content { flex: 1; }
+        .grid-header { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; background: white; padding: 15px; border: 1px solid #e1e1e1; border-radius: 8px; }
+        .bike-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .bike-card { background: white; border: 1px solid #e1e1e1; border-radius: 10px; padding: 15px; }
+        .badge { background: #0f172a; color: white; padding: 3px 10px; font-size: 11px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+        
+        /* CSS XỬ LÝ ẢNH (BẮT BUỘC) */
+        .bike-img { 
+            width: 100%; 
+            height: 180px; 
+            margin: 10px 0; 
+            border-radius: 6px; 
+            overflow: hidden; 
+            background: #f8f9fa; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .bike-img img { 
+            max-width: 100%; 
+            max-height: 100%; 
+            object-fit: contain; /* Ảnh sẽ hiển thị vừa khung mà không bị méo */
+        }
+        
+        .gps { color: #059669; font-size: 12px; margin: 10px 0; font-weight: bold; }
+        .price { font-weight: 800; font-size: 16px; color: #ff4500; }
+        .btn-rent { background: #ff4500; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; float: right; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div style="font-weight:bold; font-size: 20px;">E-BIKES</div>
+    <div class="nav-links">
+        <a href="#">Trang Chủ</a> <a href="#" style="color:#ff4500">Danh Sách Xe</a> <a href="#">Tin Tức</a> <a href="#">Hướng Dẫn</a> <a href="#">Liên Hệ</a>
+    </div>
+    <div>👤 Khách Hàng</div>
+</nav>
+
+<div class="container">
+    <!-- SIDEBAR BỔ SUNG NHIỀU CÁCH LỌC -->
+    <aside class="sidebar">
+        <span class="filter-title">BỘ LỌC TÌM KIẾM</span>
+        
+        <div class="filter-group">
+            <label class="filter-label">TÌM THEO TÊN / BIỂN SỐ</label>
+            <input type="text" placeholder="Nhập tên xe, hãng xe...">
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">LOẠI PHƯƠNG TIỆN</label>
+            <div class="checkbox-item"><input type="checkbox" checked> Tất cả (12)</div>
+            <div class="checkbox-item"><input type="checkbox"> Xe Tay Ga (6)</div>
+            <div class="checkbox-item"><input type="checkbox"> Xe Số Cơ Bản (4)</div>
+            <div class="checkbox-item"><input type="checkbox"> Xe Côn Tay (2)</div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">HÃNG SẢN XUẤT</label>
+            <div class="checkbox-item"><input type="checkbox"> Honda</div>
+            <div class="checkbox-item"><input type="checkbox"> Yamaha</div>
+            <div class="checkbox-item"><input type="checkbox"> Sym</div>
+            <div class="checkbox-item"><input type="checkbox"> Piaggio</div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">GIÁ THUÊ (VNĐ / NGÀY)</label>
+            <input type="range" min="100000" max="500000" step="10000" style="width:100%;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#666; margin-top:5px;">
+                <span>100.000đ</span><span>500.000đ</span>
+            </div>
+        </div>
+
+        <div class="filter-group">
+            <label class="filter-label">CÔNG NGHỆ & AN TOÀN</label>
+            <div class="checkbox-item"><input type="checkbox" checked> Định vị GPS Realtime</div>
+            <div class="checkbox-item"><input type="checkbox"> Khóa Smartkey</div>
+            <div class="checkbox-item"><input type="checkbox"> Phanh ABS</div>
+        </div>
+
+        <button class="btn-apply">ÁP DỤNG BỘ LỌC</button>
+    </aside>
+
+    <main class="main-content">
+        <div class="grid-header">
+            <span>Tìm thấy 1 xe phù hợp</span>
+            <span>Sắp xếp theo: <select><option>Giá: Thấp đến Cao</option></select></span>
+        </div>
+
+        <div class="bike-grid">
+            <!-- Card -->
+            <div class="bike-card">
+                <div class="badge">Xe Ga</div>
+                <div class="bike-img">
+                    <img src="https://xemayhoanphuoc.vn/wp-content/uploads/2021/06/Xe-Vision-2021-co-may-mau-1.png">
+                </div>
+                <h4 style="margin: 5px 0;">Honda Vision 110cc</h4>
+                <p style="font-size: 12px; color: #666;">Đời xe: 2024 • BKS: 43D1-999.99</p>
+                <div class="gps">● GPS Giám sát an toàn tích hợp</div>
+                <div style="border-top: 1px solid #eee; padding-top: 10px;">
+                    <span style="font-size: 12px;">Giá thuê 1 ngày:</span><br>
+                    <span class="price">150.000đ</span>
+                    <button class="btn-rent">Thuê Ngay</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

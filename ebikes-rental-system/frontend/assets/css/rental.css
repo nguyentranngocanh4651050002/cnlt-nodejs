@@ -1,0 +1,12 @@
+/* frontend/assets/css/rental.css */
+.rentals-container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+.rentals-header { margin-bottom: 30px; border-left: 4px solid var(--primary-lime); padding-left: 15px; }
+.rentals-header h1 { font-size: 26px; color: var(--text-main); }
+
+.rental-table-wrapper { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow-x: auto; box-shadow: var(--shadow-soft); }
+.rental-table { width: 100%; border-collapse: collapse; text-align: left; }
+.rental-table th { background-color: var(--bg-input); color: var(--text-main); padding: 16px 20px; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
+.rental-table td { padding: 16px 20px; color: var(--text-light); border-bottom: 1px solid var(--border-color); }
+
+.order-id { color: var(--primary-lime); font-weight: 700; } /* Mã đơn màu Cam */
+.total-price { color: var(--primary-cyan); font-weight: 700; } /* Tổng tiền màu Vàng */
